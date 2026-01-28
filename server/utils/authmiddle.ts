@@ -1,8 +1,9 @@
 const jwt = require('jsonwebtoken');
 // 验证Token的中间件
-const verifyToken = (req: any, res: any, next: any) => {
+export const verifyToken = (req: any, res: any, next: any) => {
   // 从请求头获取Token（前端一般把Token放在Authorization里，格式是 Bearer <token>）
   const authHeader = req.headers.authorization;
+  console.log(authHeader, 'authHeader');
 
   // 检查请求头是否有Token
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -31,5 +32,3 @@ const verifyToken = (req: any, res: any, next: any) => {
     return res.status(401).json({ message: 'Token无效，请重新登录' });
   }
 };
-
-export { verifyToken };
