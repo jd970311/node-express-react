@@ -7,6 +7,7 @@ export const usersTable = pgTable("users", {
   email: varchar({ length: 255 }).notNull().unique(),
   password: varchar({ length: 255 }).notNull(),
   roleId: integer().references(() => rolesTable.id).default(1), // 外键约束，关联到 roles 表的 id 字段,实现多表关联，角色鉴权
+  status: varchar({ length: 255 }).default('pending'), // 状态，pending: 待激活, active: 已激活, inactive: 已禁用
 });
 
 // 用于查询的完整 schema（包含 id）
@@ -16,4 +17,4 @@ export const usersSelectSchema = createSelectSchema(usersTable, {
 })
 
 // 用于输入验证的 schema（排除 id，因为 id 是自动生成的）
-export const usersSchema = usersSelectSchema.omit({ id: true, roleId: true })
+export const usersSchema = usersSelectSchema.omit({ id: true, roleId: true, status: true })

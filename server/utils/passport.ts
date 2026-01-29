@@ -15,8 +15,6 @@ const jwtOptions = {
 // 配置 JWT 策略
 passport.use(
   new JwtStrategy(jwtOptions, async (payload, done) => {
-    console.log(payload, 'payload');
-
     try {
       // 从 token payload 中获取用户 id
       const userId = payload.id;

@@ -25,8 +25,6 @@ export const checkPermissions = (resource: string, action: string) => {
     }
 
     const roleName = req.user.roleName || 'user';
-    console.log(roleName, 'roleName');
-
     // accesscontrol: ac.can(role)[action](resource).granted
     const roleAbility = ac.can(roleName) as any;
     const actionFn = roleAbility?.[action];
@@ -35,10 +33,6 @@ export const checkPermissions = (resource: string, action: string) => {
         message: `权限配置错误：未知 action "${action}"`,
       });
     }
-    console.log(roleAbility, 111);
-    console.log(actionFn, 222);
-    console.log(action, 3333);
-
     // // 必须绑定上下文，否则 accesscontrol 内部的 this 为 undefined
     const permission = actionFn.call(roleAbility, resource);
     // const permission = ac.can(roleName).action(resource);

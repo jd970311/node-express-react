@@ -3,7 +3,6 @@ const jwt = require('jsonwebtoken');
 export const verifyToken = (req: any, res: any, next: any) => {
   // 从请求头获取Token（前端一般把Token放在Authorization里，格式是 Bearer <token>）
   const authHeader = req.headers.authorization;
-  console.log(authHeader, 'authHeader');
 
   // 检查请求头是否有Token
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -16,7 +15,6 @@ export const verifyToken = (req: any, res: any, next: any) => {
   try {
     // 验证Token并解析出payload
     const decoded = jwt.verify(token, process.env.SECRET_KEY);
-    console.log(decoded, 'decoded');
     // 把解析出的用户信息挂载到req对象上，后续接口可以直接用
     req.user = {
       id: decoded.id, // 这里的id就是你存在Token里的用户自增ID
