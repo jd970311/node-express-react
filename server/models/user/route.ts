@@ -3,7 +3,6 @@ const router = express.Router()//创建路由实例
 import { usersTable, usersSchema } from './schema.ts' //引入用户表
 import { processPassword, verifyPassword } from '../../utils/bcrypt' //引入密码加密函数
 import { db, eq } from '../../index.ts' //引入数据库和等式函数
-import { jsonParser, urlencodedParser } from '../../server.ts'
 import { authenticateJWT } from '../../utils/passport.ts'
 import { checkPermissions } from '../../utils/checkPermissions.ts'
 // 引入发送邮件函数
@@ -12,7 +11,7 @@ const secretKey = process.env.SECRET_KEY //获取密钥
 const expiresIn = process.env.EXPIRES_IN //设置过期时间
 
 const jwt = require('jsonwebtoken') //引入jwt
-router.post('/register', jsonParser, async (req: any, res: any, next: any) => {
+router.post('/register', async (req: any, res: any, next: any) => {
   try {
     const { email, password } = usersSchema.parse(req.body) //获取用户名和密码
     const hashedPassword = await processPassword(password) //加密密码
@@ -57,7 +56,7 @@ router.get('/activate', async (req: any, res: any) => {
   res.status(200).json({ message: '激活成功', user: user[0] })
 })
 
-router.post('/login', jsonParser, async (req: any, res: any) => {
+router.post('/login', async (req: any, res: any) => {
   const { email, password } = usersSchema.parse(req.body) //获取用户名和密码
   const user = await db.select().from(usersTable).where(eq(usersTable.email, email)) //查询用户
   if (!user) {
@@ -77,13 +76,7 @@ router.post('/login', jsonParser, async (req: any, res: any) => {
   // });
   res.status(200).json({ message: '登录成功', token, user }) //返回用户
 })
-router.get('/profile', authenticateJWT, checkPermissions('profile', 'createOwn'), (req: any, res: any) => {
-  res.json(req.user)
-})
-router.put('/profile', authenticateJWT, checkPermissions('profile', 'updateOwn'), (req: any, res: any) => {
-  res.json(req.user)
-})
-router.delete('/profile', authenticateJWT, checkPermissions('article', 'deleteOwn'), (req: any, res: any) => {
+router.get('/profile', authenticateJWT, checkPermissions('profile', 'readOwn'), (req: any, res: any) => {
   res.json(req.user)
 })
 module.exports = router  

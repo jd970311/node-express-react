@@ -11,7 +11,7 @@ export const usersTable = pgTable("users", {
 });
 
 // 用于查询的完整 schema（包含 id）
-export const usersSelectSchema = createSelectSchema(usersTable, {
+const usersSelectSchema = createSelectSchema(usersTable, {
   email: () => z.string().email(),
   password: () => z.string().min(8),
 })

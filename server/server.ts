@@ -4,6 +4,8 @@ const app = express() //创建express的实例对象
 const port = process.env.PORT || 3000//创建端口号 如果环境变量中没有PORT，则使用3000
 const bodyParser = require('body-parser') // 引入body-parser
 const cors = require('cors') // 引入cors
+const jsonParser = bodyParser.json()
+const urlencodedParser = bodyParser.urlencoded()
 const { xss } = require('express-xss-sanitizer');
 // import { verifyToken } from './utils/authmiddle.ts'
 import { ZodError } from 'zod'
@@ -11,13 +13,17 @@ app.use(passportMiddleware)
 app.use(cors())
 // 应用 XSS 清理中间件（全局生效）
 app.use(xss());
-
-export const jsonParser = bodyParser.json()
-export const urlencodedParser = bodyParser.urlencoded()
+app.use(jsonParser)
+app.use(urlencodedParser)
 //注册路由
+// 引入用户路由
 const userRouter = require('./models/user/route.ts')
-// 挂载接口路由，必须以“/”开头
-app.use('/api/user', userRouter) //跳过验证token的接口
+// 引入文章路由
+const articleRouter = require('./models/article/route.ts')
+// 挂载用户路由，必须以“/”开头
+app.use('/api/user', userRouter)
+// 挂载文章路由
+app.use('/api/article', articleRouter)
 app.get('/test', (req: any, res: any) => {
   res.send('Hello World')
 })

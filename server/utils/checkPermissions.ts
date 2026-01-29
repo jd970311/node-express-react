@@ -28,6 +28,8 @@ export const checkPermissions = (resource: string, action: string) => {
     // accesscontrol: ac.can(role)[action](resource).granted
     const roleAbility = ac.can(roleName) as any;
     const actionFn = roleAbility?.[action];
+    console.log(actionFn, 'actionFn');
+
     if (typeof actionFn !== 'function') {
       return res.status(500).json({
         message: `权限配置错误：未知 action "${action}"`,
