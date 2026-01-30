@@ -58,15 +58,21 @@ router.get('/activate', async (req: any, res: any) => {
 
 router.post('/login', async (req: any, res: any) => {
   const { email, password } = usersSchema.parse(req.body) //获取用户名和密码
+  // 1. 判断用户是否存在
   const user = await db.select().from(usersTable).where(eq(usersTable.email, email)) //查询用户
-  if (!user) {
-    res.status(401).json({ message: '用户不存在' })
+  if (!user || user.length === 0) {
+    return res.status(401).json({ message: '用户不存在' })
   }
+  // 2. 判断密码是否正确
   const isPasswordValid = await verifyPassword(password, user[0]?.password) //验证密码
   if (!isPasswordValid) {
-    res.status(401).json({ message: '密码错误' })
+    return res.status(401).json({ message: '密码错误' })
   }
-  // 生成 token
+  // 3. 检查用户激活状态
+  if (user[0].status !== 'active') {
+    return res.status(403).json({ message: '账号未激活，请先激活账号' })
+  }
+  // 4. 生成 token返回给前端
   const token = jwt.sign({ id: user[0].id }, secretKey, { expiresIn })
   // res.cookie('token', token, {
   //   httpOnly: true,
