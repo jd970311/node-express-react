@@ -1,5 +1,6 @@
 import express from 'express' // 引入express（使用ES模块导入，便于类型推断）
 import { passportMiddleware } from './utils/passport.ts'
+const paginate = require('express-paginate');
 const app = express() //创建express的实例对象
 const port = process.env.PORT || 3000//创建端口号 如果环境变量中没有PORT，则使用3000
 const bodyParser = require('body-parser') // 引入body-parser
@@ -15,6 +16,8 @@ app.use(cors())
 app.use(xss());
 app.use(jsonParser)
 app.use(urlencodedParser)
+// 挂载分页中间件
+app.use(paginate.middleware(10, 50)); // 每页默认10条，最多显示50页
 //注册路由
 // 引入用户路由
 const userRouter = require('./models/user/route.ts')
