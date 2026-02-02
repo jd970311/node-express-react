@@ -11,10 +11,13 @@ const { xss } = require('express-xss-sanitizer');
 // import { verifyToken } from './utils/authmiddle.ts'
 import { ZodError } from 'zod'
 app.use(passportMiddleware)
+// 应用CORS中间件解决跨域问题
 app.use(cors())
 // 应用 XSS 清理中间件（全局生效）
 app.use(xss());
+// 应用body-parser中间件解析请求体
 app.use(jsonParser)
+// 应用body-parser中间件解析请求体
 app.use(urlencodedParser)
 // 挂载分页中间件
 app.use(paginate.middleware(10, 50)); // 每页默认10条，最多显示50页
